@@ -1,5 +1,6 @@
 defmodule Issues.GithubIssues do
 
+  @github_url Application.get_env(:issues, :github_url)
   @user_agent [{"User-agent", "Elixir plong@radiantworlds.com"}]
 
   def fetch(user, project) do
@@ -8,11 +9,11 @@ defmodule Issues.GithubIssues do
       |> handle_response
   end
 
-  defp url(user, project), do: "https://api.github.com/repos/#{user}/#{project}/issues"
+  defp url(user, project), do: "#{@github_url}/repos/#{user}/#{project}/issues"
 
-  defp handle_response({:ok, %{status_code: 200, body: body}}), do: {:ok, body}
+  defp handle_response({:ok, %{status_code: 200, body: body}}), do: {:ok, Poison.decode(body)}
 
-  defp handle_response({:ok, %{status_code: _, body: body}}), do: {:error, body}
+  defp handle_response({:ok, %{status_code: _, body: body}}), do: {:error, Poison.decode(body)}
 
-  defp handle_response({:error, %{body: body}}), do: {:error, body}
+  defp handle_response({:error, %{id: id, reason: reason}}), do: {:error, id, reason}
 end
