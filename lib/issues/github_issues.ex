@@ -5,8 +5,8 @@ defmodule Issues.GithubIssues do
 
   def fetch(user, project) do
     url(user, project)
-      |> HTTPoison.get(@user_agent)
-      |> handle_response
+    |> HTTPoison.get(@user_agent)
+    |> handle_response
   end
 
   defp url(user, project), do: "#{@github_url}/repos/#{user}/#{project}/issues"
@@ -18,5 +18,5 @@ defmodule Issues.GithubIssues do
     {:error, data}
   end
 
-  defp handle_response({:error, %{id: id, reason: reason}}), do: {:error, {id, reason}}
+  defp handle_response({:error, %{reason: reason}}), do: {:error, %{"message" => reason}}
 end

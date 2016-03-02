@@ -4,11 +4,11 @@ defmodule Issues.Cli do
 
   def run(argv) do
     argv
-      |> parse_args
-      |> process
+    |> parse_args
+    |> process
   end
 
-  def parse_args(argv) do
+  defp parse_args(argv) do
     parse = OptionParser.parse(argv, switches: [help: :boolean], aliases: [h: :help])
     case parse do
       {[help: true], _, _} -> :help
@@ -25,7 +25,22 @@ defmodule Issues.Cli do
     System.halt(0)
   end
 
-  def process({user, project, _count}) do
+  def process({user, project, count}) do
     Issues.GithubIssues.fetch(user, project)
+    |> decode_response
+    |> sort_into_ascending_order
+    |> Enum.take(count)
+  end
+
+  defp decode_response({:ok, body}), do: body
+
+  defp decode_response({:error, error}) do
+    message = error["message"]
+    IO.puts("Error fetching from GitHub: #{message}")
+    System.halt(2)
+  end
+
+  defp sort_into_ascending_order(issues) do
+    Enum.sort(issues, fn(this, that) -> this["created_at"] <= that["created_at"] end)
   end
 end
