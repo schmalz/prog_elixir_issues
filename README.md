@@ -1,6 +1,6 @@
 # Issues
 
-**TODO: Add description**
+Working through the "Issues" application from "Programming Elixir."
 
 ## Installation
 
