@@ -30,6 +30,7 @@ defmodule Issues.Cli do
     |> decode_response
     |> sort_into_ascending_order
     |> Enum.take(count)
+    |> print_table_for_columns(["number", "created_at", "title"])
   end
 
   defp decode_response({:ok, body}), do: body
@@ -42,5 +43,9 @@ defmodule Issues.Cli do
 
   defp sort_into_ascending_order(issues) do
     Enum.sort(issues, fn(this, that) -> this["created_at"] <= that["created_at"] end)
+  end
+
+  defp print_table_for_columns(data, headers) do
+    IO.puts("----")
   end
 end

@@ -3,6 +3,9 @@ defmodule Issues.GithubIssues do
   @github_url Application.get_env(:issues, :github_url)
   @user_agent [{"User-agent", "Elixir schmalz"}]
 
+  @doc"""
+  Fetches the issues from the GitHub `project` belonging to `user`.
+  """
   def fetch(user, project) do
     url(user, project)
     |> HTTPoison.get(@user_agent)
