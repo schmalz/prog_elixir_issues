@@ -9,8 +9,7 @@ defmodule Issues.Cli do
   end
 
   defp parse_args(argv) do
-    parse = OptionParser.parse(argv, switches: [help: :boolean], aliases: [h: :help])
-    case parse do
+    case OptionParser.parse(argv, switches: [help: :boolean], aliases: [h: :help]) do
       {[help: true], _, _} -> :help
       {_, [user, project, count], _} -> {user, project, String.to_integer(count)}
       {_, [user, project], _} -> {user, project, @default_count}
@@ -18,19 +17,19 @@ defmodule Issues.Cli do
     end
   end
 
-  def process(:help) do
+  defp process(:help) do
     IO.puts("""
     usage: issues <user> <project> [count|#{@default_count}]
     """)
     System.halt(0)
   end
 
-  def process({user, project, count}) do
+  defp process({user, project, count}) do
     Issues.GithubIssues.fetch(user, project)
     |> decode_response
     |> sort_into_ascending_order
     |> Enum.take(count)
-    |> print_table_for_columns(["number", "created_at", "title"])
+    |> Issues.PrettyPrint.print_table_for_columns(["number", "created_at", "title"])
   end
 
   defp decode_response({:ok, body}), do: body
@@ -43,9 +42,5 @@ defmodule Issues.Cli do
 
   defp sort_into_ascending_order(issues) do
     Enum.sort(issues, fn(this, that) -> this["created_at"] <= that["created_at"] end)
-  end
-
-  defp print_table_for_columns(data, headers) do
-    IO.puts("----")
   end
 end
