@@ -1,6 +1,8 @@
-# Issues
+# Programming Elixir - Issues
 
-Working through the "Issues" application from "Programming Elixir."
+Working through the "Issues" application from "Programming Elixir" by Dave Thomas.
+
+I created some [blog posts](https://fatschmalz.wordpress.com/) as I went through this because I changed the way some of the things were done; some of the third-party dependencies had changed and I used [poison](https://github.com/devinus/poison) rather than Erlang's jsx..
 
 ## Installation
 
